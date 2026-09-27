@@ -1,0 +1,1237 @@
+/* ==========================================================================
+   Global Design System & Variables (Dark Mode Admin Theme)
+   Adheres to theme.md specification and rich AI dashboard aesthetics.
+   ========================================================================== */
+
+:root {
+  /* Backgrounds */
+  --bg-main: #121212;
+  --bg-card: #1E1E1E;
+  --bg-card-hover: #262626;
+  --bg-header: #181818;
+  --bg-elevated: #242424;
+  --border-color: #2D2D2D;
+  --border-focus: #444444;
+
+  /* Typography Colors */
+  --text-primary: #FFFFFF;
+  --text-secondary: #A0A0A0;
+  --text-muted: #666666;
+
+  /* Status Indicators (theme.md) */
+  --status-normal: #4CAF50;
+  --status-normal-glow: rgba(76, 175, 80, 0.35);
+  --status-warning: #FFC107;
+  --status-warning-glow: rgba(255, 193, 7, 0.35);
+  --status-critical: #F44336;
+  --status-critical-glow: rgba(244, 67, 54, 0.5);
+
+  /* Hazard Accents (theme.md) */
+  --hazard-flood: #2196F3;
+  --hazard-flood-glow: rgba(33, 150, 243, 0.3);
+  --hazard-fire: #FF5722;
+  --hazard-fire-glow: rgba(255, 87, 34, 0.3);
+  --hazard-landslide: #795548;
+  --hazard-landslide-glow: rgba(121, 85, 72, 0.3);
+
+  /* Dynamic Active Hazard (defaults to Flood) */
+  --active-hazard: var(--hazard-flood);
+  --active-hazard-glow: var(--hazard-flood-glow);
+
+  /* Gemini AI Brand Accents */
+  --gemini-primary: #8E44AD;
+  --gemini-gradient: linear-gradient(135deg, #7F00FF 0%, #E100FF 50%, #00D2FF 100%);
+  --gemini-glow: rgba(142, 68, 173, 0.4);
+
+  /* Fonts */
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+
+  /* Layout */
+  --header-height: 64px;
+}
+
+/* ==========================================================================
+   CSS Reset & Base Rules
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 14px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   App Container & Layout
+   ========================================================================== */
+
+#app-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-main);
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+  border: 2px solid transparent;
+}
+
+/* Critical Alert Pulse Animation (theme.md) */
+@keyframes critical-pulse {
+  0% {
+    border-color: rgba(244, 67, 54, 0.9);
+    box-shadow: inset 0 0 25px rgba(244, 67, 54, 0.35), 0 0 20px rgba(244, 67, 54, 0.4);
+  }
+  50% {
+    border-color: rgba(244, 67, 54, 0.2);
+    box-shadow: inset 0 0 5px rgba(244, 67, 54, 0.05), 0 0 0 transparent;
+  }
+  100% {
+    border-color: rgba(244, 67, 54, 0.9);
+    box-shadow: inset 0 0 25px rgba(244, 67, 54, 0.35), 0 0 20px rgba(244, 67, 54, 0.4);
+  }
+}
+
+#app-wrapper.critical-breach {
+  animation: critical-pulse 1.5s infinite ease-in-out;
+}
+
+/* ==========================================================================
+   Top Navigation Bar
+   ========================================================================== */
+
+.top-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height);
+  padding: 0 20px;
+  background-color: var(--bg-header);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--active-hazard);
+  transition: all 0.3s ease;
+}
+
+.brand-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+}
+
+.badge-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.badge-ai-active {
+  background: rgba(142, 68, 173, 0.2);
+  color: #D29BFF;
+  border-color: rgba(142, 68, 173, 0.5);
+}
+
+/* Scenario Selector */
+.scenario-controller {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.scenario-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.scenario-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.scenario-btn.active[data-scenario="flood"] {
+  background: rgba(33, 150, 243, 0.15);
+  color: #64B5F6;
+  box-shadow: 0 0 12px rgba(33, 150, 243, 0.25);
+  border: 1px solid rgba(33, 150, 243, 0.4);
+}
+
+.scenario-btn.active[data-scenario="forest_fire"] {
+  background: rgba(255, 87, 34, 0.15);
+  color: #FF8A65;
+  box-shadow: 0 0 12px rgba(255, 87, 34, 0.25);
+  border: 1px solid rgba(255, 87, 34, 0.4);
+}
+
+.scenario-btn.active[data-scenario="landslide"] {
+  background: rgba(121, 85, 72, 0.25);
+  color: #BCAAA4;
+  box-shadow: 0 0 12px rgba(121, 85, 72, 0.3);
+  border: 1px solid rgba(121, 85, 72, 0.5);
+}
+
+.scenario-icon {
+  font-size: 15px;
+}
+
+/* Header Action Controls */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sim-status-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.live-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-normal);
+  box-shadow: 0 0 8px var(--status-normal-glow);
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px var(--status-normal); }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-action:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-focus);
+}
+
+.btn-action:active {
+  transform: translateY(1px);
+}
+
+.btn-gemini-ai {
+  background: linear-gradient(135deg, rgba(127, 0, 255, 0.2) 0%, rgba(225, 0, 255, 0.15) 100%);
+  border: 1px solid rgba(142, 68, 173, 0.6);
+  color: #E2B6FF;
+  box-shadow: 0 0 10px rgba(142, 68, 173, 0.25);
+  font-weight: 600;
+}
+
+.btn-gemini-ai:hover {
+  background: linear-gradient(135deg, rgba(127, 0, 255, 0.35) 0%, rgba(225, 0, 255, 0.25) 100%);
+  border-color: rgba(142, 68, 173, 0.9);
+  color: #FFF;
+  box-shadow: 0 0 15px rgba(142, 68, 173, 0.4);
+}
+
+.btn-evac {
+  background: rgba(244, 67, 54, 0.15);
+  border-color: rgba(244, 67, 54, 0.4);
+  color: #FF8A80;
+  font-weight: 600;
+}
+
+.btn-evac:hover {
+  background: rgba(244, 67, 54, 0.25);
+  border-color: #F44336;
+  color: #FFF;
+  box-shadow: 0 0 12px rgba(244, 67, 54, 0.3);
+}
+
+.btn-health {
+  background: rgba(76, 175, 80, 0.12);
+  border-color: rgba(76, 175, 80, 0.3);
+  color: #81C784;
+}
+
+.btn-health:hover {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: var(--status-normal);
+  color: #FFF;
+}
+
+/* ==========================================================================
+   Main Dashboard Grid Layout (theme.md 70% / 30%)
+   ========================================================================== */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 7fr 3fr;
+  flex: 1;
+  overflow: hidden;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: var(--bg-main);
+}
+
+/* Left / Center Main Content Area (70%) */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+  height: 100%;
+}
+
+.dashboard-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+  border-color: var(--border-focus);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Top Half: Map Container */
+.map-card {
+  flex: 1.1;
+  min-height: 200px;
+}
+
+.map-container {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #0f141c;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  background: #11151c;
+}
+
+#map:fullscreen,
+#map:-webkit-full-screen,
+.map-container:fullscreen,
+.map-container:-webkit-full-screen {
+  width: 100vw !important;
+  height: 100vh !important;
+  background: #11151c !important;
+}
+
+/* Bottom Half: Chart Container */
+.chart-card {
+  flex: 0.9;
+  min-height: 180px;
+}
+
+.chart-container {
+  flex: 1;
+  padding: 8px 12px 12px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-wrapper {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* ==========================================================================
+   Right Sidebar Panel (theme.md 30%)
+   ========================================================================== */
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  height: 100%;
+  padding-right: 2px;
+}
+
+.sidebar-content::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar-content::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+/* Threat Level Banner */
+.threat-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.threat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.threat-subtitle {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+.threat-title {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  color: var(--status-normal);
+  transition: color 0.3s ease;
+}
+
+.threat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  background: rgba(76, 175, 80, 0.15);
+  color: var(--status-normal);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.threat-banner.status-warning {
+  border-color: rgba(255, 193, 7, 0.4);
+  background: rgba(255, 193, 7, 0.05);
+}
+.threat-banner.status-warning .threat-title {
+  color: var(--status-warning);
+}
+.threat-banner.status-warning .threat-badge {
+  background: rgba(255, 193, 7, 0.15);
+  color: var(--status-warning);
+  border-color: rgba(255, 193, 7, 0.4);
+}
+
+.threat-banner.status-critical {
+  border-color: rgba(244, 67, 54, 0.6);
+  background: rgba(244, 67, 54, 0.1);
+  box-shadow: 0 0 15px rgba(244, 67, 54, 0.2);
+}
+.threat-banner.status-critical .threat-title {
+  color: var(--status-critical);
+}
+.threat-banner.status-critical .threat-badge {
+  background: rgba(244, 67, 54, 0.2);
+  color: var(--status-critical);
+  border-color: rgba(244, 67, 54, 0.6);
+  animation: pulse-dot 1s infinite;
+}
+
+/* Live Telemetry Digital Readout */
+.telemetry-card {
+  flex-shrink: 0;
+}
+
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 12px;
+}
+
+.telemetry-stat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.stat-unit-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.stat-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.stat-unit {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.stat-bar-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 2px;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--active-hazard);
+  border-radius: 2px;
+  transition: width 0.4s ease, background 0.3s ease;
+}
+
+.stat-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+/* Sensor Node List Matrix */
+.nodes-matrix-card {
+  flex-shrink: 0;
+}
+
+.node-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px;
+  max-height: 155px;
+  overflow-y: auto;
+}
+
+.node-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.node-row:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-focus);
+}
+
+.node-name-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.node-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-normal);
+  transition: background 0.3s ease;
+}
+
+.node-indicator.status-warning {
+  background: var(--status-warning);
+  box-shadow: 0 0 6px var(--status-warning-glow);
+}
+
+.node-indicator.status-critical {
+  background: var(--status-critical);
+  box-shadow: 0 0 8px var(--status-critical-glow);
+}
+
+.node-metrics-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* Gemini AI Advisor Quick Card in Sidebar */
+.ai-advisor-card {
+  flex-shrink: 0;
+  border-color: rgba(142, 68, 173, 0.4);
+  background: linear-gradient(180deg, rgba(142, 68, 173, 0.08) 0%, var(--bg-card) 100%);
+}
+
+.ai-advisor-header {
+  background: rgba(142, 68, 173, 0.15);
+  border-bottom: 1px solid rgba(142, 68, 173, 0.3);
+}
+
+.ai-advisor-body {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-status-summary {
+  font-size: 12px;
+  color: #E2B6FF;
+  line-height: 1.4;
+}
+
+.ai-quick-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-ai-mini {
+  flex: 1;
+  padding: 6px 8px;
+  background: rgba(142, 68, 173, 0.2);
+  border: 1px solid rgba(142, 68, 173, 0.5);
+  border-radius: 5px;
+  color: #E2B6FF;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.btn-ai-mini:hover {
+  background: rgba(142, 68, 173, 0.4);
+  color: #FFF;
+}
+
+/* Event Alert Log (theme.md) */
+.alerts-card {
+  flex: 1;
+  min-height: 140px;
+}
+
+.alert-feed {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.alert-empty-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-style: italic;
+  text-align: center;
+  padding: 20px 10px;
+}
+
+.alert-item {
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-elevated);
+  border-left: 3px solid var(--status-normal);
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1.35;
+  animation: slide-in 0.2s ease-out;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.alert-item.severity-warning {
+  border-left-color: var(--status-warning);
+  background: rgba(255, 193, 7, 0.06);
+}
+
+.alert-item.severity-critical {
+  border-left-color: var(--status-critical);
+  background: rgba(244, 67, 54, 0.08);
+}
+
+.alert-item.severity-info {
+  border-left-color: #2196F3;
+  background: rgba(33, 150, 243, 0.06);
+}
+
+.alert-item.severity-gemini {
+  border-left-color: #9C27B0;
+  background: rgba(156, 39, 176, 0.08);
+}
+
+.alert-time {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.alert-content {
+  color: var(--text-primary);
+  flex: 1;
+}
+
+/* ==========================================================================
+   Leaflet Custom Elements & Dark Tile Overrides
+   ========================================================================== */
+
+/* OpenStreetMap Dark Theme Tiles Filter */
+.dark-tiles,
+.leaflet-tile-pane .leaflet-layer.dark-tiles img,
+img.leaflet-tile.dark-tiles {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+.leaflet-container {
+  background-color: #11151c !important;
+  font-family: var(--font-main) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background-color: #1E1E1E !important;
+  color: #FFFFFF !important;
+  border: 1px solid #333333 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+}
+
+.leaflet-popup-tip {
+  background-color: #1E1E1E !important;
+}
+
+.leaflet-popup-content {
+  margin: 10px 14px !important;
+  line-height: 1.4 !important;
+  font-size: 12px !important;
+}
+
+/* Custom Pulsing Leaflet Markers */
+.node-map-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(76, 175, 80, 0.2);
+  border: 2px solid var(--status-normal);
+  color: #FFF;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  box-shadow: 0 0 10px var(--status-normal-glow);
+  transition: all 0.3s ease;
+}
+
+.node-map-marker.marker-warning {
+  background: rgba(255, 193, 7, 0.25);
+  border-color: var(--status-warning);
+  box-shadow: 0 0 12px var(--status-warning-glow);
+}
+
+.node-map-marker.marker-critical {
+  background: rgba(244, 67, 54, 0.3);
+  border-color: var(--status-critical);
+  box-shadow: 0 0 16px var(--status-critical-glow);
+  animation: marker-pulse 1s infinite alternate;
+}
+
+@keyframes marker-pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.25); }
+}
+
+/* ==========================================================================
+   Modals & Dialogs
+   ========================================================================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  transform: translateY(12px);
+  transition: transform 0.25s ease;
+}
+
+.modal-overlay.active .modal-box {
+  transform: translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.modal-close-btn:hover {
+  color: #FFF;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 20px;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border-color);
+}
+
+/* Evacuation Modal Specifics */
+.evac-alert-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(244, 67, 54, 0.12);
+  border: 1px solid rgba(244, 67, 54, 0.4);
+  border-radius: 8px;
+}
+
+.evac-alert-icon {
+  font-size: 24px;
+}
+
+.evac-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.evac-stat-card {
+  padding: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  text-align: center;
+}
+
+.evac-stat-card .label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  display: block;
+}
+
+.evac-stat-card .val {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  margin-top: 4px;
+  display: block;
+}
+
+.evac-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.checklist-item input[type="checkbox"] {
+  accent-color: #F44336;
+  width: 16px;
+  height: 16px;
+}
+
+/* Gemini AI Copilot Modal */
+.gemini-modal-box {
+  max-width: 820px;
+  border-color: rgba(142, 68, 173, 0.5);
+  box-shadow: 0 0 40px rgba(142, 68, 173, 0.25);
+}
+
+.gemini-modal-header {
+  background: linear-gradient(135deg, rgba(127, 0, 255, 0.2) 0%, rgba(225, 0, 255, 0.15) 100%);
+  border-bottom-color: rgba(142, 68, 173, 0.4);
+}
+
+.gemini-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.gemini-tab-btn {
+  padding: 6px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gemini-tab-btn.active {
+  background: rgba(142, 68, 173, 0.25);
+  color: #FFF;
+  border-color: rgba(142, 68, 173, 0.6);
+}
+
+.ai-output-box {
+  background: #141414;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 14px;
+  min-height: 180px;
+  max-height: 320px;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #E0E0E0;
+}
+
+.ai-output-box h1, .ai-output-box h2, .ai-output-box h3, .ai-output-box strong {
+  color: #FFF;
+}
+
+.ai-output-box ul {
+  padding-left: 20px;
+  margin: 6px 0;
+}
+
+.ai-chat-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.ai-text-input {
+  flex: 1;
+  background: #181818;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 9px 12px;
+  color: #FFF;
+  font-family: var(--font-main);
+  font-size: 13px;
+  outline: none;
+}
+
+.ai-text-input:focus {
+  border-color: rgba(142, 68, 173, 0.8);
+}
+
+.ai-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ai-prompt-chip {
+  padding: 4px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ai-prompt-chip:hover {
+  background: rgba(142, 68, 173, 0.2);
+  color: #E2B6FF;
+  border-color: rgba(142, 68, 173, 0.5);
+}
+
+/* Node Health Diagnostics Table */
+.health-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.health-table th {
+  text-align: left;
+  padding: 8px 10px;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.health-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-family: var(--font-mono);
+}
+
+.health-status-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+}
+.health-status-badge.healthy {
+  background: rgba(76, 175, 80, 0.15);
+  color: #4CAF50;
+}
+
+/* Settings Modal Input */
+.settings-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.settings-input-group label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.key-input-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.key-input {
+  flex: 1;
+  background: #181818;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #FFF;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  outline: none;
+}
+
+.key-input:focus {
+  border-color: rgba(142, 68, 173, 0.8);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1080px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+  html, body {
+    overflow: auto;
+  }
+  .main-content {
+    min-height: 700px;
+  }
+}
